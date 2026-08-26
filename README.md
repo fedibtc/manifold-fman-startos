@@ -57,6 +57,14 @@ make install  # sideload to the dev machine configured in ~/.startos/config.yaml
 2. Bump `version` (`upstream:wrapper`) and the release notes in
    `startos/versions/current.ts`. Flag incompatible database-migration
    changes in the notes — those need uninstall/reinstall, not update.
-3. Push to master: CI tags the release automatically, builds both `.s9pk`s,
-   and attaches them to a GitHub release (and publishes to the registry, if
-   the `RELEASE_REGISTRY` repo var is set).
+3. Push to master, then tag the release — same manual step as the Umbrel
+   store's version bump:
+
+   ```
+   git tag v<upstream>_<wrapper>   # e.g. v0.1.8_0 for version '0.1.8:0'
+   git push origin v<upstream>_<wrapper>
+   ```
+
+   The tag push triggers CI to build both `.s9pk`s and attach them to a
+   GitHub release (and publish to the registry, if the `RELEASE_REGISTRY`
+   repo var is set).
