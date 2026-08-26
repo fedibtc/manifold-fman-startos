@@ -7,14 +7,28 @@ capacity to Federation Initiators, sells seats, and supervises the bundled
 warranty, and any manifold master build may invalidate its data. It needs no
 Bitcoin node — the staging profile uses its built-in Esplora backend.
 
+## Requirements
+
+StartOS **0.4.0 stable or later**. On a 0.4.0-beta build the sideload page
+fails with an `alerts is undefined` error — update the OS first (System →
+Software Update).
+
 ## First start
 
 1. Start the service and wait for the **Operator Dashboard** health check.
 2. Run the **Show Dashboard Password** action (Actions tab) and copy the
    password.
-3. Open the **Operator Dashboard** interface and log in with it.
-4. Onboard from the dashboard (`onboard new`): fleet identity, plans/pricing,
-   and the setup-payment federation join.
+3. Open the **Operator Dashboard**: use one of the interface's **address
+   entries** (the Local `https://…` one; accept the self-signed-certificate
+   warning unless you've installed your server's root CA). Known StartOS
+   quirk: when you browse StartOS from the server itself (kiosk or a browser
+   inside a VM), the Open button builds a dead `127.0.0.1:…` link — use the
+   address entries instead.
+4. Log in with the password, then onboard from the dashboard (`onboard new`):
+   fleet identity, plans/pricing, and the setup-payment federation join.
+   After onboarding, the first join of the setup-payment federation scans its
+   full history — a couple of minutes during which the dashboard shows
+   "Loading…". One-time cost; be patient.
 
 Seat count derives from available RAM (one seat per 1.5 GiB, capped at 8);
 you can override it in the daemon config.
