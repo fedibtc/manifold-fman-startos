@@ -1,9 +1,26 @@
+import * as fs from 'fs'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
-import { passwordContainerPath, uiPort } from './utils'
+import { storeJson } from './fileModels/store'
+import { passwordContainerPath, passwordVolumePath, uiPort } from './utils'
 
 export const main = sdk.setupMain(async ({ effects }) => {
   console.info(i18n('Starting Fleet Manager (staging)!'))
+
+  // Seeded on install; .const() restarts the daemon if it ever changes.
+  const operatorPassword = await storeJson
+    .read((s) => s.operatorPassword)
+    .const(effects)
+  if (!operatorPassword) {
+    throw new Error(i18n('Operator password has not been generated yet'))
+  }
+
+  // The daemon reads (never writes) --admin-http-password-file and refuses
+  // group/other access, so write it host-side with an explicit mode on every
+  // start.
+  fs.writeFileSync(passwordVolumePath, `${operatorPassword}\n`, {
+    mode: 0o600,
+  })
 
   const mounts = sdk.Mounts.of().mountVolume({
     volumeId: 'main',

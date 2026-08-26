@@ -1,7 +1,6 @@
-import { readFile } from 'fs/promises'
+import { storeJson } from '../fileModels/store'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
-import { passwordVolumePath } from '../utils'
 
 export const showPassword = sdk.Action.withoutInput(
   // id
@@ -21,7 +20,10 @@ export const showPassword = sdk.Action.withoutInput(
 
   // the execution function
   async ({ effects }) => {
-    const password = (await readFile(passwordVolumePath, 'utf-8')).trim()
+    const password = await storeJson.read((s) => s.operatorPassword).once()
+    if (!password) {
+      throw new Error(i18n('Operator password has not been generated yet'))
+    }
     return {
       version: '1',
       title: i18n('Dashboard Password'),

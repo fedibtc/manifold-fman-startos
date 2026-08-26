@@ -3,6 +3,7 @@ export const DEFAULT_LANG = 'en_US'
 const dict = {
   // main.ts
   'Starting Fleet Manager (staging)!': 0,
+  'Operator password has not been generated yet': 12,
   'Operator Dashboard': 1,
   'The operator dashboard is ready': 2,
   'The operator dashboard is not ready': 3,
