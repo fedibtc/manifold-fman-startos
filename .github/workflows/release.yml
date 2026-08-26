@@ -4,6 +4,10 @@ on:
   push:
     tags:
       - 'v*.*'
+  # Fallback: push events have not been triggering workflows on this repo
+  # (both branch and tag pushes were silently ignored while dispatch works),
+  # so releases can also be dispatched against a tag ref.
+  workflow_dispatch:
 
 jobs:
   release:
