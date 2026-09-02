@@ -50,6 +50,10 @@ make x86      # or: make arm — single-architecture package
 make install  # sideload to the dev machine configured in ~/.startos/config.yaml
 ```
 
+A local build is signed with *your own* developer key, so it is for your own
+testing only — don't hand it to anyone. Releases must come from CI. See
+[Signing](#signing) below.
+
 ## Releasing an update
 
 1. Pick the manifold master commit to ship (its publish run must be green)
@@ -65,6 +69,35 @@ make install  # sideload to the dev machine configured in ~/.startos/config.yaml
    git push origin v<upstream>_<wrapper>
    ```
 
-   The tag push triggers CI to build both `.s9pk`s and attach them to a
-   GitHub release (and publish to the registry, if the `RELEASE_REGISTRY`
-   repo var is set).
+   The tag push triggers CI to build both `.s9pk`s, sign them, and attach
+   them to a GitHub release (and publish to the registry, if the
+   `RELEASE_REGISTRY` repo var is set). Nothing needs to be built or signed
+   on your machine — anyone with write access can cut a release this way.
+
+## Signing
+
+Every `.s9pk` is signed with a developer key, and that key is the package's
+identity — a build signed by a different key is a different developer as far
+as StartOS is concerned. The registry enforces this directly: it verifies the
+signature and rejects uploads from anyone not registered as a signer for the
+package. Keeping one stable key is also what keeps updates continuous for
+people who already have the package installed; a key that changes per release
+is the one thing that reliably breaks that.
+
+So this repo has one fixed key for the package, held as the `DEV_KEY` repo
+secret and used by the release workflow. Its public half is:
+
+```
+MCowBQYDK2VwAyEAiAoe2OThc1d1yBfcLaur56OMBO6Dy7xUgy1iq/W9JPQ=
+```
+
+Two rules follow:
+
+- **Release only through CI.** `make` on a laptop signs with whatever key is
+  in that laptop's `~/.startos/id.key.pem`, which is a different identity for
+  every one of us. Those builds are for local testing, never for distribution.
+- **Never rotate or lose `DEV_KEY`.** GitHub cannot show you a secret again
+  once it is set, so the secret is not a backup. Losing the key costs us the
+  package's identity: we could not publish to a registry as the same package,
+  and update continuity for existing installs is not something we would want
+  to test the hard way.
