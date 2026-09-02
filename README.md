@@ -10,7 +10,7 @@ The image is the public `ghcr.io/fedibtc/manifold-fman` package, published by
 manifold CI on every master merge and pinned by git-sha tag in the
 `Dockerfile` here. At build time the image is embedded into the `.s9pk` — a
 device never pulls from a registry. Versions track the Umbrel store's counter
-for the same pin (`0.1.7:0` = Umbrel `0.1.7-master.d090989b`), with the
+for the same pin (`0.x.y:0` = Umbrel `0.x.y-master.abcdef01`), with the
 `:wrapper` half for StartOS-only changes.
 
 The packaging follows the maintained
