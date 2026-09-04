@@ -11,5 +11,5 @@ RUN mkdir -p /out/etc \
 
 # The staging Fleet Manager image published by manifold CI on every master
 # merge (multi-arch, amd64 + arm64, public). Update the pin per UPDATING.md.
-FROM ghcr.io/fedibtc/manifold-fman:af81a01ac53d2b22843ec6170a21e1c0268b461e
+FROM ghcr.io/fedibtc/manifold-fman:1bd22f38e2a17519742c12fd449aa8e87ffb48f2
 COPY --from=etcfix /out/etc/ /etc/
