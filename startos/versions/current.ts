@@ -5,9 +5,9 @@ export const current = VersionInfo.of({
   // counter for the same image pin, so
   // testers see one version across both platforms; the wrapper half bumps
   // for StartOS-only packaging changes.
-  version: '0.1.9:0',
+  version: '0.1.10:0',
   releaseNotes: {
-    en_US: `Staging version on manifold master 1bd22f38. A Federation Initiator can now decommission its own seats against a development or staging FMan, so repeated federation setup testing no longer needs an operator to free capacity. FMan's SQLite migrations are unchanged since the previous pin, so this update keeps existing data. Otherwise please see git log.`,
+    en_US: `Staging version on Manifold master f06c7bbd. Includes the Fedimint v0.11.2-fedi4 P2P deadlock fix and guardian fee policy updates. Staging only; test funds and disposable data.`,
   },
   migrations: {
     up: async () => {},
