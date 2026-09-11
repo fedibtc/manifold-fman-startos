@@ -1,4 +1,15 @@
-# Fleet Manager (staging)
+# Fleet Manager
+
+## Production app
+
+**Fleet Manager** requires synced local Bitcoin Core on mainnet. Use **Show
+Dashboard Password**, then onboard in the dashboard and obtain production issuer
+authorization. Telemetry registers when authorization and the signed setup-payment
+policy are available; push notifications are deferred. Data must survive updates:
+never uninstall or reset to resolve an update error. Keep a backup and investigate.
+Ports 31000–31031 forward TCP+UDP; TCP also serves the public guardian API.
+
+The instructions below are for **Fleet Manager (staging)** only.
 
 Internal Fedi test build. This service hosts Fedimint guardian seats on the
 **Manifold staging environment** (Mutinynet/Signet): it advertises seat

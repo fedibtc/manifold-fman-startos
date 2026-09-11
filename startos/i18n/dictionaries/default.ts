@@ -11,7 +11,7 @@ const dict = {
   // interfaces.ts
   'Onboarding and dashboard for this Fleet Manager host — log in with the generated password (Show Dashboard Password action)': 4,
   'Seat Iroh Ports': 5,
-  'UDP sockets for direct guardian peer connectivity (first 8 seats)': 6,
+  'Direct guardian connections and public API (TCP+UDP, first 8 seats)': 6,
 
   // actions/showPassword.ts
   'Show Dashboard Password': 7,

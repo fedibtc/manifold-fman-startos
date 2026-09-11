@@ -1,4 +1,14 @@
 import { sdk } from './sdk'
+import { production } from './release'
 
-// Staging profile: built-in Esplora backend, no platform services required.
-export const setDependencies = sdk.setupDependencies(async () => ({}))
+export const setDependencies = sdk.setupDependencies(async () =>
+  production
+    ? {
+        bitcoind: {
+          kind: 'running',
+          versionRange: '>=28.4:14',
+          healthChecks: ['bitcoind', 'sync-progress'],
+        },
+      }
+    : {},
+)

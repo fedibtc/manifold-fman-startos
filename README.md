@@ -1,9 +1,9 @@
-# Fleet Manager (staging) for StartOS
+# Fleet Manager for StartOS
 
 StartOS package for [Fleet Manager](https://github.com/fedibtc/manifold)
-(FMan) against the Manifold **staging** environment — the StartOS counterpart
-of the [Umbrel store](https://github.com/fedibtc/manifold-umbrel-store). Not
-for production use: staging trust material only, test money (Mutinynet), and
+(FMan), defaulting to the Manifold **staging** environment — the StartOS counterpart
+of the [Umbrel store](https://github.com/fedibtc/manifold-umbrel-store). Staging is
+for testing only: staging trust material, test money (Mutinynet), and
 data can be invalidated by any master build.
 
 The image is the public `ghcr.io/fedibtc/manifold-fman` package, published by
@@ -18,7 +18,26 @@ The packaging follows the maintained
 wrapper (StartOS 0.4.0, `@start9labs/start-sdk` 2.x). FLIP will get a sibling
 repo (`manifold-flip-startos`) — StartOS tooling wants one package per repo.
 
-## What the package runs
+## Production releases
+
+Production (`fleet-manager`) requires local Bitcoin Core, with separate data
+and ports 31000–31031. Update its image/version in `startos/production.ts` and
+notes in `startos/versions/current.ts`, verify with `FMAN_RELEASE=production make`,
+then commit and push `production-v<upstream>_<wrapper>` (initially `production-v0.1.0_0`).
+Plain `make` and `v…` tags select staging. Image pins, versions, and releases are independent.
+
+Both use Start9's shared build workflow and the existing signing key. GitHub
+releases use the tag name and generated notes; packages retain their manual notes.
+
+**Accepted StartOS networking exception:** TCP+UDP forwarding preserves direct
+guardian connections and exposes the public API over plaintext TCP; admin auth
+remains required. This is the StartOS exception to Manifold's UDP-only rule.
+
+Production keeps telemetry, omits push notifications, and must preserve data under
+Manifold's [release policy](https://github.com/fedibtc/manifold/blob/master/packages/fleet-manager/production-releases.md).
+Never apply staging's uninstall/reinstall advice to production.
+
+## What the staging package runs
 
 - `fleet-manager serve --manifold-environment staging`: Signet/Mutinynet via
   the profile's default Esplora backend (no Bitcoin node dependency), no push
@@ -50,7 +69,7 @@ make x86      # or: make arm — single-architecture package
 make install  # sideload to the dev machine configured in ~/.startos/config.yaml
 ```
 
-## Releasing an update
+## Releasing a staging update
 
 1. Pick the manifold master commit to ship (its publish run must be green)
    and follow [UPDATING.md](./UPDATING.md) to bump the image pin.
@@ -66,5 +85,4 @@ make install  # sideload to the dev machine configured in ~/.startos/config.yaml
    ```
 
    The tag push triggers CI to build both `.s9pk`s and attach them to a
-   GitHub release (and publish to the registry, if the `RELEASE_REGISTRY`
-   repo var is set).
+   GitHub release. Both staging and production use GitHub Releases for downloads.
