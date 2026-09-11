@@ -14,13 +14,17 @@ workflow run is green (both architectures):
 gh run list -R fedibtc/manifold --workflow "Publish images" --branch master
 ```
 
-Pin lives in `Dockerfile` as
-`FROM ghcr.io/fedibtc/manifold-fman:<full-git-sha>`. Do not pin the moving
+The staging pin lives in `Dockerfile` as `ARG FMAN_IMAGE=<full-git-sha>`;
+production uses `productionImage` in `startos/production.ts`. Do not pin the moving
 `master` tag — it changes under the package.
 
-## Applying the bump
+For production, update `productionImage` and `productionVersion` together,
+edit the production release notes in `startos/versions/current.ts`, and follow
+the production tag process in README.md. Updates must preserve existing data.
 
-1. `Dockerfile` — replace the `FROM ghcr.io/fedibtc/manifold-fman:<sha>` tag.
+## Applying a staging bump
+
+1. `Dockerfile` — replace the default `FMAN_IMAGE` commit.
 2. `startos/versions/current.ts` — bump `version` and write release notes.
    The upstream half tracks the Umbrel store's counter for the same image
    pin (keep the two stores in step); bump the wrapper half for StartOS-only

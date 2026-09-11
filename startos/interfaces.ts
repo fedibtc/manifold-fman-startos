@@ -1,5 +1,6 @@
 import { i18n } from './i18n'
 import { sdk } from './sdk'
+import { production } from './release'
 import { irohFirstPort, irohPortCount, uiPort } from './utils'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
@@ -23,13 +24,11 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   })
   const uiReceipt = await uiMultiOrigin.export([ui])
 
-  // Seat iroh sockets. Publishing the grid removes the NAT layer so iroh can
-  // hole-punch direct guardian peer paths; without it seats silently fall
-  // back to public relays. Ranges forward TCP+UDP; only UDP is used (iroh is
-  // QUIC), the TCP side has no listener behind it.
+  // StartOS ranges forward TCP+UDP: UDP carries direct guardian connections;
+  // TCP also exposes the public guardian API. See the exception in README.md.
   const irohRange = await sdk.MultiHost.of(effects, 'seat-iroh').bindPortRange({
     internalStartPort: irohFirstPort,
-    externalStartPort: irohFirstPort,
+    externalStartPort: production ? 31000 : irohFirstPort,
     numberOfPorts: irohPortCount,
   })
   // Range exports carry no address receipt — only the UI interface does.
@@ -38,7 +37,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
       id: 'seat-iroh',
       name: i18n('Seat Iroh Ports'),
       description: i18n(
-        'UDP sockets for direct guardian peer connectivity (first 8 seats)',
+        'Direct guardian connections and public API (TCP+UDP, first 8 seats)',
       ),
     }),
   )
