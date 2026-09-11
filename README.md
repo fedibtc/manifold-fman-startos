@@ -20,30 +20,22 @@ repo (`manifold-flip-startos`) — StartOS tooling wants one package per repo.
 
 ## Production releases
 
-Production is a separate app (`fleet-manager`) requiring local Bitcoin Core.
-It keeps its own data and uses guardian ports 31000–31031; staging keeps
-`fedi-dev-fleet-manager` and ports 30000–30031. Telemetry remains enabled and
-push notifications are deferred. Both use the same generated dashboard password
-flow and shared wrapper.
+Production (`fleet-manager`) requires local Bitcoin Core, with separate data
+and ports 31000–31031. Update its image/version in `startos/production.ts` and
+notes in `startos/versions/current.ts`, verify with `FMAN_RELEASE=production make`,
+then commit and push `production-v<upstream>_<wrapper>` (initially `production-v0.1.0_0`).
+Plain `make` and `v…` tags select staging. Image pins, versions, and releases are independent.
 
-Follow the staging release process: manually update the image, version, and
-notes in `startos/production.ts` and `startos/versions/current.ts`, verify with
-`FMAN_RELEASE=production make`, commit the reviewed changes, then push a tag
-such as `production-v0.1.0_0`. This repository's release workflow builds and signs
-both architectures and attaches the packages to GitHub Releases. Regular
-`v0.1.10_0`-style tags and plain `make` still select staging. Production uses
-the existing signing key. The workflow reads each finished package's app ID and
-version and checks them against the tag before publishing.
+Both use Start9's shared build workflow and the existing signing key. GitHub
+releases use the tag name and generated notes; packages retain their manual notes.
 
-**StartOS networking exception:** both apps forward TCP+UDP because StartOS's
-range API cannot select UDP alone. This preserves direct guardian connections
-but also exposes the public guardian API over plaintext TCP; admin calls still
-require authentication. This is an accepted StartOS-specific exception to
-Manifold's UDP-only packaging rule, not an authentication bypass.
+**Accepted StartOS networking exception:** TCP+UDP forwarding preserves direct
+guardian connections and exposes the public API over plaintext TCP; admin auth
+remains required. This is the StartOS exception to Manifold's UDP-only rule.
 
-Production updates must preserve data under Manifold's
-[release policy](https://github.com/fedibtc/manifold/blob/master/packages/fleet-manager/production-releases.md).
-Never use staging's uninstall/reinstall advice for production.
+Production keeps telemetry, omits push notifications, and must preserve data under
+Manifold's [release policy](https://github.com/fedibtc/manifold/blob/master/packages/fleet-manager/production-releases.md).
+Never apply staging's uninstall/reinstall advice to production.
 
 ## What the staging package runs
 

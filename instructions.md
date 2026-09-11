@@ -2,16 +2,12 @@
 
 ## Production app
 
-**Fleet Manager** uses Bitcoin mainnet and requires the local Bitcoin Core
-service to be installed and synced. Run **Show Dashboard Password**, open the
-dashboard, and onboard a new fleet. Obtain production issuer authorization;
-telemetry registers once that authorization and the signed setup-payment
-policy are available. Push notifications are deferred.
-
-Production data is separate from staging and must survive updates. Never
-uninstall or reset to resolve an update error. Keep a backup and investigate
-before proceeding. Production guardian ports are 31000–31031, forwarding
-TCP+UDP for direct connections; TCP also serves the public guardian API.
+**Fleet Manager** requires synced local Bitcoin Core on mainnet. Use **Show
+Dashboard Password**, then onboard in the dashboard and obtain production issuer
+authorization. Telemetry registers when authorization and the signed setup-payment
+policy are available; push notifications are deferred. Data must survive updates:
+never uninstall or reset to resolve an update error. Keep a backup and investigate.
+Ports 31000–31031 forward TCP+UDP; TCP also serves the public guardian API.
 
 The instructions below are for **Fleet Manager (staging)** only.
 

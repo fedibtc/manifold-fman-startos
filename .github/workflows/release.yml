@@ -17,89 +17,28 @@ concurrency:
 jobs:
   build:
     if: github.ref_type == 'tag'
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: x86
-            runner: ubuntu-latest
-          - target: arm
-            runner: ubuntu-24.04-arm
-    steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
-        with:
-          persist-credentials: false
-      - uses: Start9Labs/start-technologies/.github/actions/setup-build-env@669c669f106bb7dbb4b604a0f441ce66d510227c
-      - run: npm ci
-      - name: Build signed package
-        env:
-          DEV_KEY: ${{ secrets.DEV_KEY }}
-          TARGET: ${{ matrix.target }}
-        run: |
-          set -euo pipefail
-          test -n "$DEV_KEY"
-          umask 077
-          mkdir -p ~/.startos .startos
-          printf '%s' "$DEV_KEY" > ~/.startos/developer.key.pem
-          cp ~/.startos/developer.key.pem .startos/build-key
-          make "$TARGET"
-      - name: Remove signing key
-        if: always()
-        run: rm -f ~/.startos/developer.key.pem .startos/build-key
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: package-${{ matrix.target }}
-          path: '*.s9pk'
-          if-no-files-found: error
-          compression-level: 0
+    uses: Start9Labs/start-technologies/.github/workflows/build.yml@f588b830584a2eb0f83833c6da3b77c3ef24b180
+    secrets:
+      DEV_KEY: ${{ secrets.DEV_KEY }}
   publish:
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: Start9Labs/start-technologies/.github/actions/setup-publish-env@669c669f106bb7dbb4b604a0f441ce66d510227c
+      # The shared build can use a temporary key for tests; never publish that.
+      - name: Require release signing key
+        env:
+          DEV_KEY: ${{ secrets.DEV_KEY }}
+        run: test -n "$DEV_KEY"
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          pattern: package-*
+          pattern: '*.s9pk'
           merge-multiple: true
-      - name: Read release details from packages
-        id: package
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-          shopt -s nullglob
-          files=(*.s9pk)
-          test "${#files[@]}" -eq 2
-          manifest=$(start-cli s9pk inspect "${files[0]}" manifest)
-          id=$(jq -r '.id' <<< "$manifest")
-          version=$(jq -r '.version' <<< "$manifest")
-          case "$id" in
-            fleet-manager) prefix=production-v ;;
-            fedi-dev-fleet-manager) prefix=v ;;
-            *) echo 'Unexpected app ID' >&2; exit 1 ;;
-          esac
-          test "$RELEASE_TAG" = "$prefix${version//:/_}"
-          for file in "${files[@]}"; do
-            start-cli s9pk inspect "$file" manifest | jq -e \
-              --arg id "$id" --arg version "$version" \
-              '.id == $id and .version == $version' > /dev/null
-          done
-          test -f "${id}_x86_64.s9pk"
-          test -f "${id}_aarch64.s9pk"
-          {
-            jq -r '.releaseNotes.en_US' <<< "$manifest"
-            printf '\nSHA-256:\n```\n'
-            sha256sum "${files[@]}"
-            printf '```\n'
-          } > release-notes.md
-          echo "title=$id $version" >> "$GITHUB_OUTPUT"
       - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           tag_name: ${{ github.ref_name }}
-          name: ${{ steps.package.outputs.title }}
-          body_path: release-notes.md
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
           files: '*.s9pk'
           fail_on_unmatched_files: true
