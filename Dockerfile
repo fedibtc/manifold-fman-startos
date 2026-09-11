@@ -3,7 +3,7 @@
 # (getpwuid via arti fs-mistrust) need real /etc/passwd, /etc/group, and
 # /etc/nsswitch.conf, so stage them with COPY — a RUN would fail in the
 # shell-less base image.
-ARG FMAN_IMAGE=f06c7bbdb1bd3372858358d8ed9dda0855065213
+ARG FMAN_IMAGE=bb63efca171ef0fdc192d3c14518a594bc1a8722
 FROM alpine:3.20 AS etcfix
 RUN mkdir -p /out/etc \
   && printf 'root:x:0:0:root:/root:/sbin/nologin\n' > /out/etc/passwd \
