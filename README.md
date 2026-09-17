@@ -26,6 +26,9 @@ notes in `startos/versions/current.ts`, verify with `FMAN_RELEASE=production mak
 then commit and push `production-v<upstream>_<wrapper>` (initially `production-v0.1.0_0`).
 Plain `make` and `v…` tags select staging. Image pins, versions, and releases are independent.
 
+Production uses trusted `https://mempool.space/api` as a fallback for Core RPC
+errors, including requests for pruned blocks. Local Core remains required.
+
 Both use Start9's shared build workflow and the existing signing key. GitHub
 releases use the tag name and generated notes; packages retain their manual notes.
 

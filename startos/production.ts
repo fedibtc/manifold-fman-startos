@@ -1,3 +1,3 @@
 // Update these together for each manual production release.
-export const productionVersion = '0.1.0:0'
-export const productionImage = '510747ab84234d130d1cb0bad7476d2f4206054c'
+export const productionVersion = '0.1.1:0'
+export const productionImage = 'd87b6dd2d984b3f15bc214718debfcc9648654d8'
