@@ -80,6 +80,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
       '--bitcoind-username',
       cookie.slice(0, colon),
       `--bitcoind-password=${cookie.slice(colon + 1)}`,
+      '--esplora-url',
+      'https://mempool.space/api',
     )
   }
 
