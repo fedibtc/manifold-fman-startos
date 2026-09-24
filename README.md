@@ -1,5 +1,15 @@
 # Fleet Manager for StartOS
 
+> **Retired:** This package has been replaced by
+> [Manifold Fedimint Guardian for StartOS](https://github.com/Start9-Community/manifold-fedimint-guardian-startos).
+> No further releases will be published from this repository.
+> Existing production users: follow the [migration instructions](./instructions.md#migrate-from-fleet-manager)
+> and save your recovery phrase before uninstalling.
+
+## Historical package documentation
+
+The documentation below describes the retired package and its former release process.
+
 StartOS package for [Fleet Manager](https://github.com/fedibtc/manifold)
 (FMan), defaulting to the Manifold **staging** environment — the StartOS counterpart
 of the [Umbrel store](https://github.com/fedibtc/manifold-umbrel-store). Staging is

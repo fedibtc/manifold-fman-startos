@@ -1,5 +1,36 @@
 # Fleet Manager
 
+> **Retired:** This package has been replaced by
+> [Manifold Fedimint Guardian for StartOS](https://github.com/Start9-Community/manifold-fedimint-guardian-startos).
+> No further releases will be published from this repository.
+
+## Migrate from Fleet Manager
+
+These steps are for the production `fleet-manager` package on mainnet.
+The replacement is mainnet-only; do not use it to restore a staging identity.
+
+1. Save your existing guardian's recovery phrase (mnemonic) somewhere safe.
+   **Do not uninstall until you have the phrase.**
+2. Take a StartOS backup of Fleet Manager before removing it.
+   Keep this as a backup for the old package: it cannot be restored into the
+   replacement, which has a different package ID.
+3. Stop and uninstall **Fleet Manager** (`fleet-manager`). Stopping alone
+   does not release its ports, so the replacement cannot install until the
+   old package is uninstalled.
+4. Install **Manifold Fedimint Guardian** (`manifold-fedimint-guardian`) from
+   the replacement repository linked above. Keep local Bitcoin Core running
+   and synced on mainnet.
+5. Run **Set Dashboard Password**, save the password, then start the service
+   and open **Operator Dashboard**.
+6. In the setup wizard, restore using your saved recovery phrase.
+   Wait for recovery to finish, then check your identity, guardian seats,
+   and wallet balances before resuming normal operation.
+
+## Historical package instructions
+
+The instructions below describe the retired package. For migration, use the
+steps above rather than the staging setup or reinstall instructions below.
+
 ## Production app
 
 **Fleet Manager** requires synced local Bitcoin Core on mainnet. Use **Show
